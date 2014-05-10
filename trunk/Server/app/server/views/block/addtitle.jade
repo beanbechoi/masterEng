@@ -1,0 +1,70 @@
+extends ../layout
+
+block content
+	#main-content
+		.row
+			.col-md-12
+				.box.box-black
+					.box-title
+						h3
+							i.icon-file
+							| Thêm chuyên đề
+						.box-tool
+							a(data-action="collapse", href="#")
+								i.icon-chevron-up
+					.box-content
+						.btn-toolbar.pull-right
+							.btn-group
+								a.btn.btn-circle.show-tooltip(title='', href='/addtitle', data-original-title='Refresh')
+									i.icon-repeat
+						br
+						br
+						form(action="/addloca", class="form-horizontal", method="POST", enctype="multipart/form-data", id="addLocaForm")	
+							.form-group
+								label.col-sm-3.col-lg-2.control-label Tên chuyên đề
+								.col-sm-9.col-lg-10.controls
+									input.form-control#countryname(type='text', value='', name ="countryname", tabindex='2')
+							.form-group
+								label.col-sm-3.col-lg-2.control-label
+								.col-sm-9.col-lg-10.controls
+									button.btn.btn-primary(type='submit',id = "btnSave", tabindex='8') Submit
+									button.btn(type='button', id = "btnCancel", tabindex='9') Cancel
+						br
+						br
+						.table-responsive
+							table.table.table-advance#locationtbl
+								thead
+									tr
+										th Tên chuyên đề
+										th(style='display:none;')
+										th.visible-md.visible-lg(style='width:130px') Action
+								tbody
+									if(resultJson.result.length > 0)
+										-	for(var i=0;i<resultJson.result.length;i++)
+											if(i%2 != 0)
+												tr
+													td
+														a(href='#', class='locaid')= resultJson.result[i].namelocation
+													td#rowID(style='display:none;')= resultJson.result[i]._id
+													td.visible-md.visible-lg
+														.btn-group
+															a.btn.btn-sm.show-tooltip(title='', href='#', class='locaid', data-original-title='Edit')
+																i.icon-edit
+															a.btn.btn-sm.btn-danger.show-tooltip(title='', class='dellocaid', href='#', data-original-title='Delete')
+																i.icon-trash
+											else
+												tr.table-flag-blue
+													td
+														a(href='#', class='locaid')= resultJson.result[i].namelocation
+													td#rowID(style='display:none;')= resultJson.result[i]._id
+													td.visible-md.visible-lg
+														.btn-group
+															a.btn.btn-sm.show-tooltip(title='', href='#' , class='locaid', data-original-title='Edit')
+																i.icon-edit
+															a.btn.btn-sm.btn-danger.show-tooltip(title='', href='#', class='dellocaid', data-original-title='Delete')
+																i.icon-trash
+						.text-center
+							ul.pagination#pagingid
+block scripts
+	script(src='/vendor/jquery.form.js')
+	script(src='/javascripts/listtitle.js')
