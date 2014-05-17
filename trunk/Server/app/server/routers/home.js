@@ -1,5 +1,6 @@
 var accountModel = require('../modules/account')
 var locationModel = require('../modules/location')
+var titleModel = require('../modules/title')
 var imageModel = require('../modules/image')
 var userHistoryModel = require('../modules/userhistory')
 var geogModel = require('../modules/geog')
