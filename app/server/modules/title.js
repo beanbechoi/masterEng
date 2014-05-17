@@ -2,143 +2,28 @@ var cnMongoDB = require('../mongodb/connection'),
 				ObjectID = cnMongoDB.ObjectID,
 				fs = require("fs");
 var MongoDb = require("mongodb");
-var locationDB = cnMongoDB.location;
+var locationDB = cnMongoDB.title;
 var accountDB = cnMongoDB.account;
 var https = require('https'); //Https module of Node.js
 var FormData = require('form-data'); //Pretty multipart form maker.
 var ACCESS_TOKEN = "CAAICtp62IZBgBAPdJ6Ohck0FhYsmiZCrOs2yZCN0Ai7JH1wNqnZC0tVfCOetqXCY60j3EfGadAK3cljdBgYQrI88qJYjuPz9J8z3tJYR9oOVzWoXfY6SL9akjwXZBwE6xhqA9csNQZCZA42BM7CLdQlD556Y6G5LIdbrLzvXRXhspE3PtVZB3LnZC";
 
 //--------------------------------
-// Function Add Image
-// Param input: List input from screen
-// Param image: image need to be upload
-// Param callback: funtion callback
-//--------------------------------
-exports.addImage = function(input, image, callback){
-	//--------------------------------
-	// Define parameter
-	//--------------------------------
-	var tmp_path;		// Path of image in client
-	var imgName;		// Image name after rename
-	var target_path;	// Path of image in server
-	var is,os;			// Input & output stream
-
-	// Get the temporary location of the file
-	tmp_path = image.path;
-
-	// Set where the file should actually exists - in this case it is in the "images" directory
-	imgName = new ObjectID() + image.name.substr(image.name.indexOf('.'),image.name.length);
-	target_path =  './app/public/upload/' + imgName;
-
-	// Move the file from the temporary location to the intended location
-	is = fs.createReadStream(tmp_path);
-	os = fs.createWriteStream(target_path);
-	is.pipe(os);
-	is.on('end',function() {
-		fs.unlinkSync(tmp_path,function(err){
-		});
-	});
-
-	// Return data image name to router
-	callback(null,imgName);
-}
-
-//--------------------------------
 // Function Add Location
 // Param input: List input from screen
 // Param callback: funtion callback
 //--------------------------------
-exports.addLocation = function(input, callback){
-	if(input.locationid == ''){
-		//-----------------------------------------
-		// Define item insert to database
-		//-----------------------------------------
-		var itemEntry = {	namelocation: 'Jack1',
-							country: 'vn',
-							city: 'hochiminh-quan2',
-							isrecommend: '',
-							description: '',
-							imagelist: [],
-							checkin: [],
-							imagethumb: '',
-							coordinate: [],
-							like: 0,
-							comment: 0,
-							address : '',
-							fbid: ''
-						};
-		itemEntry.namelocation = input.namelocation;
-		itemEntry.country = input.country;
-		itemEntry.city = input.city;
-		itemEntry.description = input.description;
-		itemEntry.imagelist = input.imagelist.split(",");
-		itemEntry.imagethumb = itemEntry.imagelist[0];
-		var cordi = input.coordinate.split(",");
-		itemEntry.coordinate = [Number(cordi[0]),Number(cordi[1])];
-		itemEntry.isrecommend = input.isrecommend;
-		itemEntry.address = input.address;
-		if (itemEntry._id) {
-			itemEntry._id = new ObjectID(itemEntry._id);
-		}
-
-		//-----------------------------------------
-		// Post to facebook
-		//-----------------------------------------
-		var form = new FormData(); //Create multipart form
-		var imageName = itemEntry.imagethumb.substr(itemEntry.imagethumb.indexOf('/upload/') + 8,itemEntry.imagethumb.length);
-		form.append('file', fs.createReadStream('./app/public/upload/'+ imageName)); //Put file
-		form.append('message', itemEntry.description); //Put message
-		 
-		//POST request options, notice 'path' has access_token parameter
-		var options = {
-			method: 'post',
-			host: 'graph.facebook.com',
-			path: '/534081833342710/photos?access_token=' + ACCESS_TOKEN,
-			headers: form.getHeaders(),
-		}
-
-		//Do POST request, callback for response
-		var request = https.request(options, function (response){
-			//console.log('STATUS: ' + response.statusCode);
-			//console.log('HEADERS: ' + JSON.stringify(response.headers));
-			response.setEncoding('utf8');
-
-			response.on('data', function(chunk) {
-				itemEntry.fbid = (JSON.parse(chunk)).id;
-				console.log(itemEntry.fbid);
-			});
-
-			response.on('end', function() {
-				locationDB.save(itemEntry, {safe: true}, callback);
-			});
-
-		});
-		 
-		//Binds form to request
-		form.pipe(request);
-
-		//If anything goes wrong (request-wise not FB)
-		request.on('error', function (error) {
-			callback(error,null);
-		});
-	} else {
-		var cordi = input.coordinate.split(",");
-		locationDB.update( { _id : new ObjectID(input.locationid) }, 
-							{ $set : { namelocation : input.namelocation,
-									   country 		: input.country,
-									   city			: input.city,
-									   address		: input.address,
-									   description	: input.description,
-									   imagelist	: input.imagelist.split(","),
-									   coordinate	: [Number(cordi[0]),Number(cordi[1])],
-									   isrecommend	: input.isrecommend
-							} }, function(err,result){
-			if(err)
-				callback(err,'Can not update user');
-			else
-				callback(null,result);
-		});
-	}
+exports.addTitle = function(input, callback){
+	//-----------------------------------------
+	// Define item insert to database
+	//-----------------------------------------
+	var itemEntry = {	titlename: 'title',
+						parrentid: '',
+						level: 0,
+					};
+	itemEntry.titlename = input.titlename;
+	itemEntry.parrentid = input.parrentid;
+	itemEntry.level = input.level;
 }
 
 //--------------------------------
