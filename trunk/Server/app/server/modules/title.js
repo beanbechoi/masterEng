@@ -2,30 +2,55 @@ var cnMongoDB = require('../mongodb/connection'),
 				ObjectID = cnMongoDB.ObjectID,
 				fs = require("fs");
 var MongoDb = require("mongodb");
-var locationDB = cnMongoDB.title;
-var accountDB = cnMongoDB.account;
+var titleDB = cnMongoDB.title;
+var locationDB = cnMongoDB.location;
 var https = require('https'); //Https module of Node.js
 var FormData = require('form-data'); //Pretty multipart form maker.
-var ACCESS_TOKEN = "CAAICtp62IZBgBAPdJ6Ohck0FhYsmiZCrOs2yZCN0Ai7JH1wNqnZC0tVfCOetqXCY60j3EfGadAK3cljdBgYQrI88qJYjuPz9J8z3tJYR9oOVzWoXfY6SL9akjwXZBwE6xhqA9csNQZCZA42BM7CLdQlD556Y6G5LIdbrLzvXRXhspE3PtVZB3LnZC";
 
 //--------------------------------
 // Function Add Location
 // Param input: List input from screen
 // Param callback: funtion callback
 //--------------------------------
-exports.addTitle = function(input, callback){
-	//-----------------------------------------
-	// Define item insert to database
-	//-----------------------------------------
-	var itemEntry = {	titlename: 'title',
-						parrentid: '',
-						level: 0,
-					};
-	itemEntry.titlename = input.titlename;
-	itemEntry.parrentid = input.parrentid;
-	itemEntry.level = input.level;
+exports.updatetitle = function(titlename, callback){
+	titleDB.insert({
+		"titlename": titlename,
+		"level": 0,
+		"parrentID": ""
+	},function(err,result){
+		if(err)
+			callback(err,'Can insert title');
+		else
+			callback(null,result);
+	});
 }
-
+//--------------------------------
+//Get list  location
+//Param userid: current user
+//Param callback: funtion callback
+//--------------------------------
+exports.getListTitle = function(page,offset,callback){
+	var iSkip = (page - 1)* offset;
+	var iOffset = page * offset;
+	titleDB.find({}).sort([['_id','desc']]).skip(iSkip).limit(iOffset).toArray(function(err,result){
+		if(err)
+			callback(err,'Can not get list title');
+		else
+			callback(null,result);
+	});
+}
+//--------------------------------
+//Get count list location
+//Param callback: funtion callback
+//--------------------------------
+exports.getCountListTitle = function(callback){
+	titleDB.count({}, function(err,result){
+		if(err)
+			callback(err,'Can not get list location');
+		else
+			callback(null,result);
+	});
+}
 //--------------------------------
 // Get list recommend location
 // Param userid: current user

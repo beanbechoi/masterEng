@@ -7,7 +7,7 @@ $(document).ready(function() {
 	$($('#pagingid  li')[1]).addClass('active')
 
 	$.ajax({
-		url: '/listlocation',
+		url: '/listtitle',
 		type: 'POST',
 		data: {"page" : 1},
 		success: function(data){
@@ -82,7 +82,7 @@ function drawData(dataJson){
 			tmpRow = '	<tr >';
 		else
 			tmpRow = '	<tr class="table-flag-blue">';
-		tmpRow += '			<td><a href="#" class="locaid">' + dataJson[i].namelocation + '</a></td>'
+		tmpRow += '			<td><a href="#" class="locaid">' + dataJson[i].titlename + 'aa</a></td>'
 		tmpRow += '			<td class="visible-md visible-lg">'
 		tmpRow += '				<div class="btn-group">'
 		tmpRow += '					<a title="" href="#" data-original-title="Edit" class="btn btn-sm show-tooltip locaid">'

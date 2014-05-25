@@ -34,6 +34,7 @@ module.exports = {
 		location:db.collection('location'),
 		image:db.collection('userimage'),
 		country:db.collection('country'),
+		title:db.collection('title'),
 		city:db.collection('city'),
 		systemstatus:db.collection('systemstatus'),
 		paramsetting:db.collection('paramsetting'),

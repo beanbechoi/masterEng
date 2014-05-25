@@ -19,11 +19,12 @@ block content
 									i.icon-repeat
 						br
 						br
-						form(action="/addloca", class="form-horizontal", method="POST", enctype="multipart/form-data", id="addLocaForm")	
+						
+						form(action="/updatetitle", class="form-horizontal", method="POST", enctype="multipart/form-data", id="addTitleForm")	
 							.form-group
 								label.col-sm-3.col-lg-2.control-label Tên chuyên đề
 								.col-sm-9.col-lg-10.controls
-									input.form-control#countryname(type='text', value='', name ="countryname", tabindex='2')
+									input.form-control#titlename(type='text', value='', name ="titlename", tabindex='2')
 							.form-group
 								label.col-sm-3.col-lg-2.control-label
 								.col-sm-9.col-lg-10.controls
@@ -44,7 +45,7 @@ block content
 											if(i%2 != 0)
 												tr
 													td
-														a(href='#', class='locaid')= resultJson.result[i].namelocation
+														a(href='#', class='locaid')= resultJson.result[i].titlename
 													td#rowID(style='display:none;')= resultJson.result[i]._id
 													td.visible-md.visible-lg
 														.btn-group
@@ -55,7 +56,7 @@ block content
 											else
 												tr.table-flag-blue
 													td
-														a(href='#', class='locaid')= resultJson.result[i].namelocation
+														a(href='#', class='locaid')= resultJson.result[i].titlename
 													td#rowID(style='display:none;')= resultJson.result[i]._id
 													td.visible-md.visible-lg
 														.btn-group
