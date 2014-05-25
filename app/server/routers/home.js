@@ -82,31 +82,47 @@ module.exports = function(app, nodeuuid){
 		res.render('block/admin', { title: 'Admin Page' });
 	});
 
-	//------------------------------------------------------------------
-	// Get list location page = 1
-	// Return: render location page
-	//------------------------------------------------------------------
+	//--------------------------------
+	// Update Title
+	// Return: Update country
+	//--------------------------------
 	app.get('/addtitle',function(req,res){
 		if(req.session.user != null){
 			var input = req.body;
 			var page = input.page;
 			var offset = 10;
-			locationModel.getListLocation(page, offset, function (err, retJson) {
+			titleModel.getListLocation(page, offset, function (err, retJson) {
 				if (err) {
 					var jsonResult = createJsonResult('GetLocation', METHOD_GET, STATUS_FAIL, SYSTEM_ERR, err, null);
 					res.json(jsonResult, 400);
 					return;
 				} else {
 					var jsonResult = createJsonResult('Login', METHOD_POS, STATUS_SUCESS, SYSTEM_SUC, null, retJson);
-					res.render('block/addtitle', { title: 'Add Title', path : req.path, resultJson : jsonResult });
+					res.render('block/addtitle', { title: 'Thêm Chuyên Đề', path : req.path, resultJson : jsonResult });
 				}
 			});
 		} else {
 			res.redirect('/loginad');
 		}
-
 	});
-	
+	app.post('/updatetitle',function(req,res){
+		if(req.session.user != null){
+			var input = req.body;
+			var titlename = input.titlename;
+			titleModel.updatetitle(titlename, function (err, retJson) {
+				if (err) {
+					var jsonResult = createJsonResult('Add Title', METHOD_GET, STATUS_FAIL, SYSTEM_ERR, err, null);
+					res.json(jsonResult, 400);
+					return;
+				} else {
+					var jsonResult = createJsonResult('Add Title', METHOD_GET, STATUS_SUCESS, SYSTEM_SUC, null, retJson);
+					res.json(jsonResult,200);
+				}
+			});
+		} else {
+			res.redirect('/loginad');
+		}
+	});
 	//------------------------------------------------------------------
 	// Get list location page = 1
 	// Return: render location page
@@ -131,7 +147,32 @@ module.exports = function(app, nodeuuid){
 		}
 
 	});
-
+	//------------------------------------------------------------------
+	// Get list location by page
+	// Return: list location
+	//------------------------------------------------------------------
+	app.post('/listtitle',function(req,res){
+		if(req.session.user != null){
+			var input = req.body;
+			var page = input.page;
+			var offset = 10;
+			titleModel.getListTitle(page, offset, function (err, retJson) {
+				if (err) {
+					var jsonResult = createJsonResult('GetLocation', METHOD_GET, STATUS_FAIL, SYSTEM_ERR, err, null);
+					res.json(jsonResult, 400);
+					return;
+				} else {
+					titleModel.getCountListTitle(function (err, retJsonCount) {
+						var jsonResult = createJsonResult('GetLocation', METHOD_GET, STATUS_SUCESS, SYSTEM_SUC, null, retJson);
+						jsonResult.result2 = retJsonCount;
+						res.json(jsonResult, 200);
+					});
+				}
+			});
+		} else {
+			res.redirect('/loginad');
+		}
+	});
 	//------------------------------------------------------------------
 	// Get list location by page
 	// Return: list location
